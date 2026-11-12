@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phiên Tòa 5D Online - Phòng Xử Án Tối Cao</title>
+    <title>Phiên Tòa 5D Online - Cloud Multiplayer</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -18,10 +18,7 @@
             overflow-x: hidden;
             user-select: none;
         }
-        .font-cinzel {
-            font-family: 'Cinzel', serif;
-        }
-        /* 5D Courtroom Perspective Room */
+        .font-cinzel { font-family: 'Cinzel', serif; }
         .courtroom-5d {
             background: radial-gradient(circle at 50% 25%, #2a150b 0%, #0d0603 65%, #020101 100%);
             box-shadow: inset 0 0 120px rgba(0,0,0,0.95);
@@ -39,7 +36,6 @@
             50% { transform: translateY(-6px) scale(1.02); }
         }
         .anim-float { animation: floatAnim 3.2s ease-in-out infinite; }
-
         @keyframes screenShake {
             0%, 100% { transform: translate(0, 0) rotate(0); }
             20% { transform: translate(-16px, -10px) rotate(-1.8deg); }
@@ -48,14 +44,12 @@
             80% { transform: translate(10px, -6px) rotate(1deg); }
         }
         .shake-active { animation: screenShake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-
         @keyframes slamAnim {
             0% { transform: scale(4) rotate(-15deg); opacity: 0; }
             70% { transform: scale(0.95) rotate(2deg); opacity: 1; }
             100% { transform: scale(1) rotate(0); opacity: 1; }
         }
         .anim-slam { animation: slamAnim 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-
         .btn-objection {
             background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
             border: 2px solid #f87171;
@@ -81,38 +75,38 @@
                     <i class="fa-solid fa-scale-balanced"></i>
                 </div>
                 <h1 class="font-cinzel text-2xl sm:text-3xl font-black text-amber-300 tracking-wider">
-                    PHIÊN TÒA 5D ONLINE
+                    PHIÊN TÒA 5D CLOUD
                 </h1>
-                <p class="text-xs text-slate-400 mt-1">Mô phỏng phòng xử án tối cao 3D/5D trực tuyến</p>
+                <p class="text-xs text-slate-400 mt-1">Trận chiến phòng xử án trực tuyến đa người chơi qua mạng</p>
             </div>
 
             <form onsubmit="handleJoinRoom(event)" class="space-y-4 text-xs sm:text-sm">
                 <div>
                     <label class="block text-amber-300 font-bold mb-1.5"><i class="fa-solid fa-door-open mr-1.5"></i> Mã Phòng (Room ID)</label>
                     <div class="flex gap-2">
-                        <input id="input-room" required type="text" value="TOA-AN-VIP" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono focus:border-amber-400 focus:outline-none">
+                        <input id="input-room" required type="text" value="TOA-VIP-01" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono uppercase focus:border-amber-400 focus:outline-none">
                         <button type="button" onclick="randomRoom()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-600 font-bold cursor-pointer"><i class="fa-solid fa-dice"></i></button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-amber-300 font-bold mb-1.5"><i class="fa-solid fa-user mr-1.5"></i> Tên Của Bạn</label>
-                    <input id="input-name" required type="text" placeholder="VD: Luật Sư Tài Ba" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-amber-400 focus:outline-none">
+                    <label class="block text-amber-300 font-bold mb-1.5"><i class="fa-solid fa-user mr-1.5"></i> Tên Nhân Vật</label>
+                    <input id="input-name" required type="text" placeholder="VD: Luật Sư Hùng" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-amber-400 focus:outline-none">
                 </div>
 
                 <div>
                     <label class="block text-amber-300 font-bold mb-1.5"><i class="fa-solid fa-user-shield mr-1.5"></i> Chọn Vai Trò</label>
                     <select id="select-role" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-amber-400 focus:outline-none">
-                        <option value="judge">👨‍⚖️ Thẩm Phán (Chủ Tọa Phiên Tòa)</option>
-                        <option value="prosecutor">⚖️ Công Tố Viên (Bên Buộc Tội)</option>
+                        <option value="judge">👨‍⚖️ Thẩm Phán (Chủ Tọa)</option>
+                        <option value="prosecutor">⚖️ Công Tố Viên (Buộc Tội)</option>
                         <option value="defense" selected>🧑‍💼 Luật Sư Bào Chữa</option>
-                        <option value="defendant">🧍‍♂️ Bị Cáo (Đứng Vành Móng Ngựa)</option>
-                        <option value="police">👮‍♂️ Cảnh Sát Áo Xanh (Áp Giải Trật Tự)</option>
+                        <option value="defendant">🧍‍♂️ Bị Cáo</option>
+                        <option value="police">👮‍♂️ Cảnh Sát Áo Xanh</option>
                     </select>
                 </div>
 
                 <button type="submit" class="btn-hammer w-full py-3.5 rounded-xl text-slate-950 font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer mt-2 text-sm sm:text-base">
-                    <i class="fa-solid fa-gavel"></i> VÀO PHÒNG XỬ ÁN NGAY
+                    <i class="fa-solid fa-cloud-arrow-up"></i> VÀO PHÒNG CLOUD NGAY
                 </button>
             </form>
         </div>
@@ -126,11 +120,11 @@
             </div>
             <div>
                 <div class="flex items-center gap-2">
-                    <h1 class="font-cinzel text-sm sm:text-base font-bold text-amber-300">PHIÊN TÒA 5D TỐI CAO</h1>
+                    <h1 class="font-cinzel text-sm sm:text-base font-bold text-amber-300">PHIÊN TÒA 5D CLOUD</h1>
                     <span id="badge-role" class="text-[11px] font-bold px-2.5 py-0.5 rounded bg-amber-500 text-slate-950">Luật sư</span>
-                    <span id="badge-room" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Phòng: TOA-AN-VIP</span>
+                    <span id="badge-room" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Phòng: ...</span>
                 </div>
-                <p class="text-xs text-amber-100/70">Vụ án: Tranh tụng trực tuyến thời gian thực đa người chơi</p>
+                <p class="text-xs text-amber-100/70">Đồng bộ trực tuyến thời gian thực qua Firebase Cloud</p>
             </div>
         </div>
         <button onclick="leaveRoom()" class="px-3 py-1.5 rounded-lg bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-200 font-bold text-xs flex items-center gap-1.5 cursor-pointer">
@@ -145,11 +139,26 @@
         <div class="lg:col-span-8 flex flex-col gap-3">
             
             <div class="courtroom-5d rounded-3xl border-2 border-amber-700/60 shadow-2xl overflow-hidden relative p-4">
-                <div class="flex justify-center pb-3">
-                    <div class="px-6 py-1 rounded-full bg-amber-950/80 border border-amber-500/50 flex items-center gap-2 shadow-xl">
-                        <i class="fa-solid fa-scale-balanced text-amber-400"></i>
-                        <span class="font-cinzel text-xs font-bold tracking-widest text-amber-200 uppercase">PHÒNG XỬ ÁN 5D TỐI CAO</span>
-                        <i class="fa-solid fa-scale-balanced text-amber-400"></i>
+                
+                <!-- HP BARS CONVICTION METER -->
+                <div class="grid grid-cols-2 gap-4 mb-3 bg-slate-950/80 p-2.5 rounded-2xl border border-amber-500/30">
+                    <div>
+                        <div class="flex justify-between text-[11px] font-bold mb-1 text-rose-400">
+                            <span><i class="fa-solid fa-balance-scale-right"></i> UY TÍN CÔNG TỐ</span>
+                            <span id="hp-prosecutor-text">100/100 HP</span>
+                        </div>
+                        <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-rose-900">
+                            <div id="hp-prosecutor-bar" class="bg-gradient-to-r from-rose-600 to-red-500 h-full transition-all duration-300" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[11px] font-bold mb-1 text-sky-400">
+                            <span><i class="fa-solid fa-shield-halved"></i> UY TÍN BÀO CHỮA</span>
+                            <span id="hp-defense-text">100/100 HP</span>
+                        </div>
+                        <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-sky-900">
+                            <div id="hp-defense-bar" class="bg-gradient-to-r from-sky-600 to-blue-500 h-full transition-all duration-300" style="width: 100%;"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -173,7 +182,7 @@
                     </div>
                     <div class="desk-3d w-56 sm:w-64 py-1.5 px-3 rounded-t-xl text-center -mt-3 relative z-10">
                         <div class="text-[10px] font-extrabold text-amber-300 uppercase">Thẩm Phán Chủ Tọa</div>
-                        <div id="name-judge" class="text-xs sm:text-sm font-bold text-white truncate">Thẩm phán Minh Đức</div>
+                        <div id="name-judge" class="text-xs sm:text-sm font-bold text-white truncate">Chưa có Thẩm phán</div>
                     </div>
                 </div>
 
@@ -197,7 +206,7 @@
                         </div>
                         <div class="desk-3d w-full py-1.5 px-2 rounded-t-lg text-center -mt-3 relative z-10">
                             <div class="text-[9px] font-extrabold text-rose-400 uppercase">Công Tố Viên</div>
-                            <div id="name-prosecutor" class="text-[11px] sm:text-xs font-bold text-white truncate">KSV Hoàng Quân</div>
+                            <div id="name-prosecutor" class="text-[11px] sm:text-xs font-bold text-white truncate">Chưa có Công tố</div>
                         </div>
                     </div>
 
@@ -232,7 +241,7 @@
                         </div>
                         <div class="desk-3d w-full py-1.5 px-2 rounded-t-lg text-center -mt-3 relative z-10 border-t-4 border-amber-600">
                             <div class="text-[9px] font-extrabold text-emerald-400 uppercase">Vành Móng Ngựa</div>
-                            <div id="name-defendant" class="text-[11px] sm:text-xs font-bold text-white truncate">Bị cáo Trần Văn Tèo</div>
+                            <div id="name-defendant" class="text-[11px] sm:text-xs font-bold text-white truncate">Chưa có Bị cáo</div>
                         </div>
                     </div>
 
@@ -253,7 +262,7 @@
                         </div>
                         <div class="desk-3d w-full py-1.5 px-2 rounded-t-lg text-center -mt-3 relative z-10">
                             <div class="text-[9px] font-extrabold text-sky-400 uppercase">Luật Sư Bào Chữa</div>
-                            <div id="name-defense" class="text-[11px] sm:text-xs font-bold text-white truncate">LS. Nguyễn Hữu Đạt</div>
+                            <div id="name-defense" class="text-[11px] sm:text-xs font-bold text-white truncate">Chưa có Luật sư</div>
                         </div>
                     </div>
                 </div>
@@ -263,20 +272,23 @@
             <div class="bg-slate-900 border-2 border-amber-500/60 rounded-3xl p-4 shadow-2xl flex flex-col justify-between">
                 <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-xs">
                     <span id="speaker-tag" class="px-3 py-1 rounded bg-amber-500 text-slate-950 font-black uppercase">Chủ Tọa</span>
-                    <span id="room-status-text" class="text-emerald-400 font-mono">● Đã kết nối phòng</span>
+                    <span id="room-status-text" class="text-emerald-400 font-mono">● Đang kết nối Firebase Cloud...</span>
                 </div>
                 <div id="dialogue-text" class="text-slate-100 text-sm sm:text-base font-medium min-h-[50px] mb-3 leading-relaxed">
-                    Chào mừng quý vị đến với Phiên Tòa 5D Tối Cao. Vụ án chính thức bắt đầu tranh tụng!
+                    Chào mừng quý vị đến với Phiên Tòa 5D Cloud. Hãy chọn vai trò và tham gia tranh tụng!
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <button onclick="sendStatement()" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-comments text-amber-400"></i> Phát Biểu Lời Khai
+                        <i class="fa-solid fa-comments text-amber-400"></i> Phát Biểu
+                    </button>
+                    <button onclick="openEvidenceModal()" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-briefcase"></i> Vật Chứng
                     </button>
                     <button onclick="triggerObjection()" class="btn-objection px-3 py-2.5 rounded-xl text-white font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-hand-fist"></i> HÔ: PHẢN ĐỐI!
+                        <i class="fa-solid fa-hand-fist"></i> PHẢN ĐỐI!
                     </button>
                     <button onclick="triggerHammer()" class="btn-hammer px-3 py-2.5 rounded-xl text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-gavel"></i> GÕ BÚA TUYÊN ÁN
+                        <i class="fa-solid fa-gavel"></i> GÕ BÚA
                     </button>
                 </div>
             </div>
@@ -284,20 +296,51 @@
 
         <!-- Right Sidebar: Transcript & Players (4 cols) -->
         <div class="lg:col-span-4 flex flex-col gap-3">
-            <div class="bg-slate-900 border border-slate-700/80 rounded-3xl p-3.5 shadow-lg flex-1 flex flex-col min-h-[340px]">
+            <div class="bg-slate-900 border border-slate-700/80 rounded-3xl p-3.5 shadow-lg flex-1 flex flex-col min-h-[420px]">
                 <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
                     <h2 class="text-xs font-extrabold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-scroll"></i> Biên Bản Tranh Tụng Tòa Án
+                        <i class="fa-solid fa-scroll"></i> Biên Bản & Chat Tòa Án
                     </h2>
+                    <span id="online-count" class="text-[10px] bg-slate-800 text-amber-300 px-2 py-0.5 rounded-full font-mono">0 online</span>
                 </div>
-                <div id="transcript-box" class="flex-1 space-y-2 max-h-[380px] overflow-y-auto pr-1 text-xs">
+                <div id="transcript-box" class="flex-1 space-y-2 max-h-[440px] overflow-y-auto pr-1 text-xs">
                     <div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-slate-300">
-                        [Hệ thống]: Khởi tạo phòng xử án thành công. Sẵn sàng tương tác real-time.
+                        [Hệ thống]: Khởi tạo kết nối cloud thành công.
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- EVIDENCE MODAL -->
+    <div id="modal-evidence" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border border-amber-500/50 rounded-3xl max-w-lg w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
+                <h3 class="font-cinzel text-amber-300 font-bold text-lg"><i class="fa-solid fa-briefcase mr-2"></i> Trình Bày Vật Chứng Trước Tòa</h3>
+                <button onclick="closeEvidenceModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Chọn vật chứng chính xác để tấn công uy tín phe đối lập (-25 HP):</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-6">
+                <div onclick="presentEvidence('Dao găm dính dấu vân tay giả', true)" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-2xl cursor-pointer transition">
+                    <div class="font-bold text-amber-300 mb-1"><i class="fa-solid fa-knife mr-1"></i> Dao Găm Giả</div>
+                    <div class="text-slate-400 text-[11px]">Vũ khí tang vật chứa dấu vân tay không khớp.</div>
+                </div>
+                <div onclick="presentEvidence('Đoạn ghi âm ngoại phạm lúc 21h', true)" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-2xl cursor-pointer transition">
+                    <div class="font-bold text-amber-300 mb-1"><i class="fa-solid fa-microphone mr-1"></i> Ghi Âm Ngoại Phạm</div>
+                    <div class="text-slate-400 text-[11px]">Băng ghi âm chứng minh bị cáo ở quán cà phê.</div>
+                </div>
+                <div onclick="presentEvidence('Biên lai mua sắm sai giờ', false)" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-2xl cursor-pointer transition">
+                    <div class="font-bold text-amber-300 mb-1"><i class="fa-solid fa-receipt mr-1"></i> Biên Lai Mua Sắm</div>
+                    <div class="text-slate-400 text-[11px]">Hóa đơn tại siêu thị không liên quan vụ án.</div>
+                </div>
+                <div onclick="presentEvidence('Tờ giấy trắng không chữ', false)" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-2xl cursor-pointer transition">
+                    <div class="font-bold text-amber-300 mb-1"><i class="fa-solid fa-file mr-1"></i> Giấy Trắng Vô Danh</div>
+                    <div class="text-slate-400 text-[11px]">Không có thông tin chứng cứ pháp lý.</div>
+                </div>
+            </div>
+            <button onclick="closeEvidenceModal()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer">Đóng Cửa Sổ</button>
+        </div>
+    </div>
 
     <!-- OBJECTION OVERLAY ANIMATION -->
     <div id="objection-overlay" class="fixed inset-0 z-50 pointer-events-none hidden items-center justify-center bg-red-950/50 backdrop-blur-[2px]">
@@ -308,87 +351,195 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT GAME LOGIC & REAL-TIME BROADCAST -->
-    <script>
-        let myName = "";
-        let myRoom = "TOA-AN-VIP";
-        let myRole = "defense";
+    <!-- FIREBASE MODULES & GAME LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const bc = new BroadcastChannel('phien_toa_5d_channel_v3');
-
-        bc.onmessage = (event) => {
-            const data = event.data;
-            if (data.room === myRoom) {
-                if (data.type === 'statement') {
-                    appendTranscript(`[${data.roleName} - ${data.sender}]: ${data.text}`);
-                    updateDialogue(data.role, data.sender, data.text);
-                } else if (data.type === 'objection') {
-                    playObjectionEffect(data.sender);
-                } else if (data.type === 'hammer') {
-                    appendTranscript(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA TUYÊN ÁN! Kết quả: ${data.result}`);
-                    updateDialogue('judge', 'Thẩm Phán Tối Cao', `TÒA TUYÊN ÁN: ${data.result}`);
-                }
-            }
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'phien-toa-5d-default';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyDummyKeyForRuntimeEnvironment",
+            authDomain: "default-project.firebaseapp.com",
+            projectId: "default-project",
+            storageBucket: "default-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
         };
 
-        function randomRoom() {
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let myName = "";
+        let myRoom = "TOA-VIP-01";
+        let myRole = "defense";
+        let unsubscribeRoom = null;
+
+        window.randomRoom = function() {
             document.getElementById('input-room').value = 'ROOM-' + Math.floor(1000 + Math.random() * 9000);
         }
 
-        function handleJoinRoom(e) {
+        window.handleJoinRoom = async function(e) {
             e.preventDefault();
             myName = document.getElementById('input-name').value.trim() || "Người Chơi";
-            myRoom = document.getElementById('input-room').value.trim().toUpperCase() || "TOA-AN-VIP";
+            myRoom = document.getElementById('input-room').value.trim().toUpperCase() || "TOA-VIP-01";
             myRole = document.getElementById('select-role').value;
 
-            const roleLabelMap = { judge: 'Thẩm Phán', prosecutor: 'Công Tố Viên', defense: 'Luật Sư', defendant: 'Bị Cáo', police: 'Cảnh Sát' };
-            const roleName = roleLabelMap[myRole];
-
             document.getElementById('badge-room').textContent = `Phòng: ${myRoom}`;
-            document.getElementById('badge-role').textContent = roleName;
-
-            if (myRole === 'judge') document.getElementById('name-judge').textContent = myName;
-            if (myRole === 'prosecutor') document.getElementById('name-prosecutor').textContent = myName;
-            if (myRole === 'defense') document.getElementById('name-defense').textContent = myName;
-            if (myRole === 'defendant') document.getElementById('name-defendant').textContent = myName;
+            const roleLabels = { judge: 'Thẩm Phán', prosecutor: 'Công Tố Viên', defense: 'Luật Sư', defendant: 'Bị Cáo', police: 'Cảnh Sát' };
+            document.getElementById('badge-role').textContent = roleLabels[myRole];
 
             document.getElementById('screen-lobby').classList.add('hidden');
-            appendTranscript(`[Hệ thống]: ${myName} đã tham gia phòng ${myRoom} với vai trò ${roleName}.`);
+            document.getElementById('room-status-text').textContent = "● Đang kết nối Cloud...";
+
+            try {
+                await signInAnonymously(auth);
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', `room_${myRoom}`);
+                const snap = await getDoc(roomRef);
+
+                let roomData = {
+                    judge: '', prosecutor: '', defense: '', defendant: '', police: '',
+                    hpProsecutor: 100, hpDefense: 100,
+                    transcript: [{ sender: 'Hệ thống', text: `Phòng ${myRoom} đã khởi tạo trên Cloud. Sẵn sàng chiến đấu!`, time: new Date().toLocaleTimeString() }],
+                    lastAction: { type: 'system', text: 'Phòng đã sẵn sàng.', sender: 'Hệ thống' }
+                };
+
+                if (!snap.exists()) {
+                    roomData[myRole] = myName;
+                    await setDoc(roomRef, roomData);
+                } else {
+                    let data = snap.data();
+                    data[myRole] = myName;
+                    await updateDoc(roomRef, data);
+                }
+
+                listenToRoom(roomRef);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('room-status-text').textContent = "● Lỗi kết nối Cloud (Chạy Offline Fallback)";
+                document.getElementById('room-status-text').className = "text-amber-400 font-mono";
+            }
+        };
+
+        function listenToRoom(roomRef) {
+            if (unsubscribeRoom) unsubscribeRoom();
+            unsubscribeRoom = onSnapshot(roomRef, (docSnap) => {
+                if (!docSnap.exists()) return;
+                const data = docSnap.data();
+
+                document.getElementById('name-judge').textContent = data.judge || 'Chưa có Thẩm phán';
+                document.getElementById('name-prosecutor').textContent = data.prosecutor || 'Chưa có Công tố';
+                document.getElementById('name-defense').textContent = data.defense || 'Chưa có Luật sư';
+                document.getElementById('name-defendant').textContent = data.defendant || 'Chưa có Bị cáo';
+
+                // HP Bars
+                const hpP = data.hpProsecutor ?? 100;
+                const hpD = data.hpDefense ?? 100;
+                document.getElementById('hp-prosecutor-bar').style.width = hpP + '%';
+                document.getElementById('hp-prosecutor-text').textContent = hpP + '/100 HP';
+                document.getElementById('hp-defense-bar').style.width = hpD + '%';
+                document.getElementById('hp-defense-text').textContent = hpD + '/100 HP';
+
+                // Transcript
+                if (data.transcript) {
+                    const box = document.getElementById('transcript-box');
+                    box.innerHTML = data.transcript.map(t => `<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-slate-300">[${t.time || ''}] <b>${t.sender}</b>: ${t.text}</div>`).join('');
+                    box.scrollTop = box.scrollHeight;
+                }
+
+                // Last Action Trigger
+                if (data.lastAction && data.lastAction.id !== window.lastProcessedActionId) {
+                    window.lastProcessedActionId = data.lastAction.id;
+                    if (data.lastAction.type === 'objection') {
+                        executeObjectionAnim(data.lastAction.sender);
+                    } else if (data.lastAction.type === 'statement') {
+                        updateDialogueBox(data.lastAction.role, data.lastAction.sender, data.lastAction.text);
+                    } else if (data.lastAction.type === 'evidence') {
+                        updateDialogueBox(data.lastAction.role, data.lastAction.sender, `Trình chứng cứ: ${data.lastAction.text}`);
+                    }
+                }
+
+                document.getElementById('room-status-text').textContent = "● Đã kết nối Cloud Real-Time";
+            }, (error) => {
+                console.error(error);
+            });
         }
 
-        function leaveRoom() {
+        window.leaveRoom = function() {
+            if (unsubscribeRoom) unsubscribeRoom();
             document.getElementById('screen-lobby').classList.remove('hidden');
-        }
+        };
 
-        function sendStatement() {
-            const text = prompt("Nhập lời phát biểu hoặc lập luận tranh tụng của bạn trước tòa:");
+        window.sendStatement = async function() {
+            const text = prompt("Nhập lời phát biểu/lập luận trước tòa:");
             if (!text) return;
-            const roleLabelMap = { judge: 'Thẩm Phán', prosecutor: 'Công Tố Viên', defense: 'Luật Sư', defendant: 'Bị Cáo', police: 'Cảnh Sát' };
-            const roleName = roleLabelMap[myRole];
+            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', `room_${myRoom}`);
+            const snap = await getDoc(roomRef);
+            if (!snap.exists()) return;
+            const data = snap.data();
 
-            appendTranscript(`[${roleName} - ${myName}]: ${text}`);
-            updateDialogue(myRole, myName, text);
+            const newMsg = { sender: `${myName} (${myRole.toUpperCase()})`, text: text, time: new Date().toLocaleTimeString() };
+            data.transcript.push(newMsg);
+            data.lastAction = { id: Date.now(), type: 'statement', sender: myName, role: myRole, text: text };
 
-            bc.postMessage({
-                room: myRoom,
-                type: 'statement',
-                sender: myName,
-                role: myRole,
-                roleName: roleName,
-                text: text
-            });
-        }
+            await updateDoc(roomRef, data);
+        };
 
-        function triggerObjection() {
-            playObjectionEffect(myName);
-            bc.postMessage({
-                room: myRoom,
-                type: 'objection',
-                sender: myName
-            });
-        }
+        window.triggerObjection = async function() {
+            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', `room_${myRoom}`);
+            const snap = await getDoc(roomRef);
+            if (!snap.exists()) return;
+            const data = snap.data();
 
-        function playObjectionEffect(senderName) {
+            data.transcript.push({ sender: myName, text: '🔥 PHẢN ĐỐI!', time: new Date().toLocaleTimeString() });
+            data.lastAction = { id: Date.now(), type: 'objection', sender: myName };
+
+            await updateDoc(roomRef, data);
+        };
+
+        window.openEvidenceModal = function() {
+            document.getElementById('modal-evidence').classList.remove('hidden');
+            document.getElementById('modal-evidence').classList.add('flex');
+        };
+        window.closeEvidenceModal = function() {
+            document.getElementById('modal-evidence').classList.add('hidden');
+            document.getElementById('modal-evidence').classList.remove('flex');
+        };
+
+        window.presentEvidence = async function(evidenceName, isCorrect) {
+            closeEvidenceModal();
+            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', `room_${myRoom}`);
+            const snap = await getDoc(roomRef);
+            if (!snap.exists()) return;
+            const data = snap.data();
+
+            if (isCorrect) {
+                if (myRole === 'prosecutor') data.hpDefense = Math.max(0, (data.hpDefense || 100) - 25);
+                else data.hpProsecutor = Math.max(0, (data.hpProsecutor || 100) - 25);
+            }
+
+            data.transcript.push({ sender: `${myName} (${myRole})`, text: `Trình vật chứng: ${evidenceName} (${isCorrect ? '✅ Hợp lệ (-25 HP)' : '❌ Không hợp lệ'})`, time: new Date().toLocaleTimeString() });
+            data.lastAction = { id: Date.now(), type: 'evidence', sender: myName, role: myRole, text: evidenceName };
+
+            await updateDoc(roomRef, data);
+        };
+
+        window.triggerHammer = async function() {
+            const verdict = prompt("Kết quả tuyên án (VD: Bị cáo VÔ TỘI / Bị cáo 5 năm tù giam):", "Bị cáo VÔ TỘI");
+            if (!verdict) return;
+            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', `room_${myRoom}`);
+            const snap = await getDoc(roomRef);
+            if (!snap.exists()) return;
+            const data = snap.data();
+
+            data.transcript.push({ sender: 'THẨM PHÁN TỐI CAO', text: `⚖️ TÒA TUYÊN ÁN: ${verdict}`, time: new Date().toLocaleTimeString() });
+            data.lastAction = { id: Date.now(), type: 'statement', sender: 'Thẩm Phán', role: 'judge', text: `TÒA TUYÊN ÁN: ${verdict}` };
+
+            await updateDoc(roomRef, data);
+        };
+
+        function executeObjectionAnim(senderName) {
             const overlay = document.getElementById('objection-overlay');
             const banner = document.getElementById('objection-banner');
             const wrapper = document.getElementById('stage-wrapper');
@@ -403,7 +554,6 @@
             void banner.offsetWidth;
             banner.classList.add('anim-slam');
 
-            // Web Audio API Sound
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 [200, 350, 500, 700].forEach((freq, idx) => {
@@ -423,26 +573,9 @@
                 overlay.classList.add('hidden');
                 overlay.classList.remove('flex');
             }, 800);
-
-            appendTranscript(`🔥 ${senderName} vừa hô lớn: PHẢN ĐỐI!`);
-            showBubble(myRole, '"PHẢN ĐỐI!"');
         }
 
-        function triggerHammer() {
-            const result = prompt("Nhập kết quả tuyên án của Thẩm Phán (VD: Bị cáo VÔ TỘI / Bị cáo 3 năm tù giam):", "Bị cáo VÔ TỘI");
-            if (!result) return;
-
-            appendTranscript(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA TUYÊN ÁN! Kết quả: ${result}`);
-            updateDialogue('judge', 'Thẩm Phán Tối Cao', `TÒA TUYÊN ÁN: ${result}`);
-
-            bc.postMessage({
-                room: myRoom,
-                type: 'hammer',
-                result: result
-            });
-        }
-
-        function updateDialogue(role, name, text) {
+        function updateDialogueBox(role, name, text) {
             const roleLabels = { judge: 'Thẩm Phán', prosecutor: 'Công Tố Viên', defense: 'Luật Sư', defendant: 'Bị Cáo', police: 'Cảnh Sát' };
             document.getElementById('speaker-tag').textContent = `${roleLabels[role] || 'Hệ Thống'}: ${name}`;
             document.getElementById('dialogue-text').textContent = `"${text}"`;
@@ -452,16 +585,10 @@
         function showBubble(role, text) {
             const bubble = document.getElementById(`bubble-${role}`);
             if (!bubble) return;
-            bubble.textContent = text;
+            bubble.textContent = `"${text}"`;
             bubble.classList.remove('hidden');
-            setTimeout(() => bubble.classList.add('hidden'), 3500);
-        }
-
-        function appendTranscript(msg) {
-            const box = document.getElementById('transcript-box');
-            box.innerHTML += `<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-slate-300">${msg}</div>`;
-            box.scrollTop = box.scrollHeight;
+            setTimeout(() => bubble.classList.add('hidden'), 4000);
         }
     </script>
 </body>
-</html>vv
+</html>
