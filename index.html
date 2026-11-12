@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiên Tòa 5D Online - Courtroom Simulator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0b0f19; color: #f3f4f6; min-height: 100vh; overflow-x: hidden; }
+        
+        /* LOBBY SCREEN */
+        #lobby-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            padding: 20px;
+        }
+        .lobby-card {
+            background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+            padding: 40px; border-radius: 16px; width: 100%; max-width: 500px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        .lobby-card h1 { text-align: center; margin-bottom: 24px; color: #f8fafc; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #94a3b8; font-weight: 600; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 12px 16px; background: #0f172a; border: 1px solid #334155;
+            border-radius: 8px; color: #fff; font-size: 16px; outline: none; transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: #3b82f6; }
+        .btn-primary {
+            width: 100%; padding: 14px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
+            transition: transform 0.1s, filter 0.2s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* GAME SCREEN */
+        #game-screen { display: none; width: 100vw; height: 100vh; flex-direction: column; background: #0f172a; }
+        
+        /* TOP HUD */
+        .top-hud {
+            height: 60px; background: #1e293b; border-bottom: 1px solid #334155;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+        }
+        .hud-info { display: flex; gap: 20px; font-size: 14px; color: #cbd5e1; }
+        .hud-info span { background: #0f172a; padding: 6px 12px; border-radius: 6px; border: 1px solid #334155; }
+        .btn-exit { background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        /* 5D COURTROOM STAGE */
+        .courtroom-container {
+            flex: 1; position: relative; perspective: 1200px; overflow: hidden;
+            background: linear-gradient(180deg, #111827 0%, #030712 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .stage-3d {
+            width: 90%; max-width: 1100px; height: 65vh; background: radial-gradient(circle at 50% 30%, #1f2937 0%, #111827 100%);
+            border: 2px solid #374151; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr;
+            padding: 20px; gap: 15px; transform-style: preserve-3d; transform: rotateX(5deg);
+        }
+
+        /* SEATS / CHARACTERS */
+        .character-box {
+            background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 15px; text-align: center; position: relative; transition: all 0.3s ease;
+        }
+        .character-box.active-turn { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        .avatar { font-size: 40px; margin-bottom: 8px; }
+        .char-title { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .char-name { font-size: 15px; font-weight: bold; color: #f8fafc; margin-top: 2px; }
+
+        /* POSITIONS */
+        .judge-pos { grid-column: 2 / 3; grid-row: 1 / 2; background: rgba(30, 41, 59, 0.9); }
+        .prosecutor-pos { grid-column: 1 / 2; grid-row: 2 / 3; }
+        .defense-pos { grid-column: 3 / 4; grid-row: 2 / 3; }
+        .defendant-pos { grid-column: 2 / 3; grid-row: 2 / 3; display: flex; flex-direction: row; gap: 10px; }
+        .police-pos { grid-column: 1 / 2; grid-row: 1 / 2; background: rgba(15, 118, 110, 0.2); border-color: rgba(20, 184, 166, 0.3); }
+
+        /* BOTTOM CONTROL PANEL */
+        .control-panel {
+            height: 140px; background: #1e293b; border-top: 1px solid #334155;
+            display: flex; padding: 15px 20px; gap: 20px; align-items: center; justify-content: space-between;
+        }
+        .dialogue-box {
+            flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 10px;
+            padding: 12px 16px; font-size: 15px; color: #e2e8f0; height: 100%; overflow-y: auto;
+        }
+        .action-buttons { display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
+        .btn-action {
+            padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 8px;
+            font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 13px; transition: background 0.2s;
+        }
+        .btn-action:hover { background: #2563eb; }
+        .btn-objection { background: #ef4444 !important; }
+        .btn-objection:hover { background: #dc2626 !important; }
+        .btn-hammer { background: #f59e0b !important; color: #0f172a !important; }
+        .btn-hammer:hover { background: #d97706 !important; }
+
+        /* OBJECTION OVERLAY */
+        #objection-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center;
+            z-index: 999; animation: flashBg 0.5s infinite alternate;
+        }
+        #objection-text {
+            font-size: 80px; font-weight: 900; color: #ef4444; text-transform: uppercase;
+            font-style: italic; text-shadow: 0 0 20px #000, 0 0 40px #ef4444;
+            animation: zoomInObjection 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes zoomInObjection {
+            0% { transform: scale(0.2); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes flashBg {
+            0% { background: rgba(239, 68, 68, 0.2); }
+            100% { background: rgba(0, 0, 0, 0.9); }
+        }
+        .shake { animation: shakeScreen 0.4s ease-in-out; }
+        @keyframes shakeScreen {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-10px, 5px); }
+            40% { transform: translate(10px, -5px); }
+            60% { transform: translate(-5px, -5px); }
+            80% { transform: translate(5px, 5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOBBY SCREEN -->
+    <div id="lobby-screen">
+        <div class="lobby-card">
+            <h1>Phiên Tòa 5D Online</h1>
+            <div class="form-group">
+                <label>Tên Nhân Vật Của Bạn</label>
+                <input type="text" id="input-name" placeholder="Nhập tên của bạn..." value="Luật Sư Tuấn">
+            </div>
+            <div class="form-group">
+                <label>Mã Phòng</label>
+                <input type="text" id="input-room" value="ROOM-999">
+            </div>
+            <div class="form-group">
+                <label>Chọn Vai Trò Trong Phiên Tòa</label>
+                <select id="select-role">
+                    <option value="judge">👨‍⚖️ Thẩm Phán (Chủ Tọa)</option>
+                    <option value="prosecutor">⚖️ Công Tố Viên (Buộc Tội)</option>
+                    <option value="defense" selected>🧑‍💼 Luật Sư Bào Chữa</option>
+                    <option value="defendant">🧍‍♂️ Bị Cáo</option>
+                    <option value="police">👮‍♂️ Cảnh Sát Áo Xanh (Áp Giải)</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="joinGame()">Vào Phòng Xét Xử Ngay</button>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen">
+        <div class="top-hud">
+            <div class="hud-info">
+                <span id="hud-room">Phòng: ROOM-999</span>
+                <span id="hud-user">Người chơi: Luật Sư Tuấn</span>
+                <span id="hud-role">Vai trò: Luật Sư Bào Chữa</span>
+            </div>
+            <button class="btn-exit" onclick="leaveGame()">Rời Phòng</button>
+        </div>
+
+        <div class="courtroom-container" id="court-container">
+            <div class="stage-3d">
+                <!-- Cảnh sát áo xanh -->
+                <div class="character-box police-pos">
+                    <div class="avatar">👮‍♂️</div>
+                    <div class="char-title">Cảnh Sát Gác Vành Móng Ngựa</div>
+                    <div class="char-name" id="name-police">Đồng chí Hùng</div>
+                </div>
+
+                <!-- Thẩm phán -->
+                <div class="character-box judge-pos">
+                    <div class="avatar">👨‍⚖️</div>
+                    <div class="char-title">Thẩm Phán Chủ Tọa</div>
+                    <div class="char-name" id="name-judge">Quan Tòa Minh</div>
+                </div>
+
+                <!-- Công tố viên -->
+                <div class="character-box prosecutor-pos">
+                    <div class="avatar">⚖️</div>
+                    <div class="char-title">Công Tố Viên</div>
+                    <div class="char-name" id="name-prosecutor">Kiểm Sát Viên Nam</div>
+                </div>
+
+                <!-- Bị cáo & Bàn bị cáo -->
+                <div class="character-box defendant-pos">
+                    <div style="flex: 1;">
+                        <div class="avatar">🧍‍♂️</div>
+                        <div class="char-title">Bị Cáo</div>
+                        <div class="char-name" id="name-defendant">Nguyễn Văn A</div>
+                    </div>
+                </div>
+
+                <!-- Luật sư bào chữa -->
+                <div class="character-box defense-pos active-turn">
+                    <div class="avatar">🧑‍💼</div>
+                    <div class="char-title">Luật Sư Bào Chữa</div>
+                    <div class="char-name" id="name-defense">Luật Sư Tuấn</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROL PANEL -->
+        <div class="control-panel">
+            <div class="dialogue-box" id="dialogue-log">
+                [Hệ thống]: Phiên tòa 5D chính thức khai mạc. Các bên giữ trật tự! Thẩm phán tuyên bố bắt đầu phần tranh tụng.
+            </div>
+            <div class="action-buttons">
+                <button class="btn-action btn-objection" onclick="triggerObjection()">Hô: PHẢN ĐỐI!</button>
+                <button class="btn-action btn-hammer" onclick="triggerHammer()">Gõ Búa Tuyên Án</button>
+                <button class="btn-action" onclick="sendStatement()">Phát Biểu Lời Khai</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OBJECTION OVERLAY -->
+    <div id="objection-overlay" onclick="hideObjection()">
+        <div id="objection-text">PHẢN ĐỐI!</div>
+    </div>
+
+    <script>
+        let myName = "";
+        let myRoom = "";
+        let myRole = "";
+
+        // BroadcastChannel để đồng bộ online thời gian thực giữa các tab/trình duyệt trên máy
+        const channel = new Uint8Array();
+        const bc = new BroadcastChannel('phientoa_5d_room');
+
+        bc.onmessage = (event) => {
+            const data = event.data;
+            if (data.room === myRoom) {
+                if (data.type === 'statement') {
+                    appendLog(`[${data.senderRole.toUpperCase()} - ${data.senderName}]: ${data.text}`);
+                } else if (data.type === 'objection') {
+                    showObjectionAnim(data.senderName);
+                } else if (data.type === 'hammer') {
+                    appendLog(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA TUYÊN ÁN! Kết quả: ${data.result}`);
+                }
+            }
+        };
+
+        function joinGame() {
+            myName = document.getElementById('input-name').value.trim() || "Vô Danh";
+            myRoom = document.getElementById('input-room').value.trim() || "ROOM-999";
+            myRole = document.getElementById('select-role').value;
+
+            document.getElementById('hud-room').innerText = `Phòng: ${myRoom}`;
+            document.getElementById('hud-user').innerText = `Người chơi: ${myName}`;
+            document.getElementById('hud-role').innerText = `Vai trò: ${document.getElementById('select-role').selectedOptions[0].text}`;
+
+            // Cập nhật tên hiển thị lên ghế tương ứng
+            if(myRole === 'judge') document.getElementById('name-judge').innerText = myName;
+            if(myRole === 'prosecutor') document.getElementById('name-prosecutor').innerText = myName;
+            if(myRole === 'defense') document.getElementById('name-defense').innerText = myName;
+            if(myRole === 'defendant') document.getElementById('name-defendant').innerText = myName;
+            if(myRole === 'police') document.getElementById('name-police').innerText = myName;
+
+            document.getElementById('lobby-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+
+            appendLog(`[Hệ thống]: Bạn đã vào phòng ${myRoom} với vai trò ${document.getElementById('select-role').selectedOptions[0].text}.`);
+        }
+
+        function leaveGame() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('lobby-screen').style.display = 'flex';
+        }
+
+        function sendStatement() {
+            let text = prompt("Nhập lời phát biểu/tranh tụng của bạn trước tòa:");
+            if (!text) return;
+
+            appendLog(`[BẠN - ${myName}]: ${text}`);
+            bc.postMessage({
+                room: myRoom,
+                type: 'statement',
+                senderName: myName,
+                senderRole: myRole,
+                text: text
+            });
+        }
+
+        function triggerObjection() {
+            showObjectionAnim(myName);
+            bc.postMessage({
+                room: myRoom,
+                type: 'objection',
+                senderName: myName
+            });
+        }
+
+        function showObjectionAnim(name) {
+            const overlay = document.getElementById('objection-overlay');
+            const container = document.getElementById('court-container');
+            overlay.style.display = 'flex';
+            container.classList.add('shake');
+
+            // Web Audio API phát tiếng bíp kịch tính
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            } catch(e) {}
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                container.classList.remove('shake');
+            }, 800);
+
+            appendLog(`🔥 ${name} vừa hô lớn: PHẢN ĐỐI!`);
+        }
+
+        function hideObjection() {
+            document.getElementById('objection-overlay').style.display = 'none';
+        }
+
+        function triggerHammer() {
+            let result = prompt("Nhập kết quả tuyên án (Ví dụ: Bị cáo VÔ TỘI / Bị cáo 3 năm tù giam):", "Bị cáo VÔ TỘI");
+            if (!result) return;
+
+            appendLog(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA TUYÊN ÁN! Kết quả: ${result}`);
+            bc.postMessage({
+                room: myRoom,
+                type: 'hammer',
+                result: result
+            });
+        }
+
+        function appendLog(msg) {
+            const logBox = document.getElementById('dialogue-log');
+            logBox.innerHTML += `<br>` + msg;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
