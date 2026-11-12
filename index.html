@@ -3,109 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phiên Tòa 5D Online - Supabase Realtime</title>
-    <!-- Nhúng thư viện Supabase JS Client -->
+    <title>Phiên Tòa 5D - Esport Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #07090e; color: #f3f4f6; min-height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Rajdhani', sans-serif; }
+        body { background: #030508; color: #f3f4f6; min-height: 100vh; overflow: hidden; }
 
-        /* LOBBY SCREEN */
+        /* LOBBY STYLE */
         #lobby-screen {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+            height: 100vh; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
             padding: 20px; position: absolute; top: 0; left: 0; width: 100%; z-index: 10;
         }
         .lobby-card {
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 40px; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            background: rgba(10, 15, 30, 0.95); backdrop-filter: blur(20px);
+            border: 2px solid #3b82f6; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.1);
+            padding: 40px; border-radius: 16px; width: 100%; max-width: 480px;
         }
-        .lobby-card h1 { text-align: center; margin-bottom: 24px; color: #60a5fa; font-size: 28px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+        .lobby-card h1 {
+            text-align: center; margin-bottom: 24px; color: #60a5fa; font-family: 'Orbitron', sans-serif;
+            font-size: 26px; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 15px rgba(96, 165, 250, 0.6);
+        }
         .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 12px; color: #60a5fa; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
         .form-group input, .form-group select {
-            width: 100%; padding: 12px 16px; background: #0b0f19; border: 1px solid #334155;
-            border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: all 0.3s;
+            width: 100%; padding: 12px 16px; background: #020617; border: 1px solid #1e3a8a;
+            border-radius: 8px; color: #fff; font-size: 16px; font-weight: 600; outline: none; transition: all 0.3s;
         }
-        .form-group input:focus, .form-group select:focus { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+        .form-group input:focus, .form-group select:focus { border-color: #60a5fa; box-shadow: 0 0 15px rgba(96, 165, 250, 0.5); }
         .btn-primary {
-            width: 100%; padding: 14px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            width: 100%; padding: 14px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white; border: 1px solid #60a5fa; border-radius: 8px; font-size: 16px; font-family: 'Orbitron', sans-serif;
+            font-weight: 700; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
         }
-        .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
+        .btn-primary:hover { filter: brightness(1.2); box-shadow: 0 0 30px rgba(96, 165, 250, 0.8); transform: translateY(-2px); }
 
         /* GAME SCREEN */
-        #game-screen { display: none; width: 100vw; height: 100vh; flex-direction: column; background: #07090e; }
+        #game-screen { display: none; width: 100vw; height: 100vh; flex-direction: column; background: #030508; }
         
         .top-hud {
-            height: 60px; background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid #1e293b;
+            height: 60px; background: rgba(5, 10, 20, 0.98); border-bottom: 2px solid #1e3a8a;
             display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 5;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
         }
-        .hud-info { display: flex; gap: 15px; font-size: 13px; color: #94a3b8; }
-        .hud-info span { background: #0b0f19; padding: 6px 14px; border-radius: 8px; border: 1px solid #334155; color: #e2e8f0; font-weight: 600; }
-        .btn-exit { background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
-        .btn-exit:hover { background: #b91c1c; }
+        .hud-info { display: flex; gap: 15px; font-size: 14px; color: #94a3b8; font-weight: 700; }
+        .hud-info span { background: #0a0f1d; padding: 6px 14px; border-radius: 6px; border: 1px solid #3b82f6; color: #60a5fa; font-family: 'Orbitron', sans-serif; font-size: 12px; }
+        .btn-exit { background: #ef4444; color: white; border: 1px solid #f87171; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: 'Orbitron', sans-serif; font-size: 11px; transition: all 0.2s; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        .btn-exit:hover { background: #dc2626; box-shadow: 0 0 15px rgba(239, 68, 68, 0.8); }
 
-        /* 5D PERSPECTIVE ROOM */
+        /* ARENA BATTLEFIELD 5D */
         .courtroom-container {
             flex: 1; position: relative; perspective: 1400px; overflow: hidden;
-            background: radial-gradient(circle at 50% 40%, #172033 0%, #06080f 100%);
+            background: radial-gradient(circle at 50% 40%, #0c1830 0%, #030508 100%);
             display: flex; align-items: center; justify-content: center;
         }
         .stage-5d {
             width: 92%; max-width: 1200px; height: 72vh;
-            background: linear-gradient(180deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
-            border: 2px solid rgba(59, 130, 246, 0.2); border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0,0,0,0.5);
+            background: rgba(8, 14, 28, 0.7);
+            border: 2px solid rgba(59, 130, 246, 0.4); border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(59, 130, 246, 0.15);
             position: relative; display: grid;
             grid-template-columns: 1fr 1.2fr 1fr; grid-template-rows: 1fr 1fr;
-            gap: 20px; padding: 25px; transform-style: preserve-3d; transform: rotateX(8deg);
+            gap: 20px; padding: 25px; transform-style: preserve-3d; transform: rotateX(6deg);
         }
         .seat-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(5, 10, 20, 0.95) 100%);
+            border: 1px solid #1e3a8a; border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 15px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            padding: 15px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            transition: all 0.3s;
         }
-        .avatar-box { font-size: 50px; margin-bottom: 6px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
-        .seat-role { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        .seat-name { font-size: 16px; font-weight: bold; color: #f8fafc; margin-top: 3px; }
+        .seat-card:hover { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .avatar-box { font-size: 45px; margin-bottom: 6px; filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.4)); }
+        .seat-role { font-size: 11px; color: #60a5fa; text-transform: uppercase; letter-spacing: 2px; font-family: 'Orbitron', sans-serif; font-weight: 700; }
+        .seat-name { font-size: 16px; font-weight: 700; color: #f8fafc; margin-top: 4px; text-shadow: 0 0 8px rgba(255,255,255,0.3); }
 
         .pos-police { grid-column: 1 / 2; grid-row: 1 / 2; }
-        .pos-judge { grid-column: 2 / 3; grid-row: 1 / 2; }
+        .pos-judge { grid-column: 2 / 3; grid-row: 1 / 2; border-color: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
         .pos-prosecutor { grid-column: 1 / 2; grid-row: 2 / 3; }
         .pos-defendant { grid-column: 2 / 3; grid-row: 2 / 3; }
         .pos-defense { grid-column: 3 / 4; grid-row: 2 / 3; }
 
-        /* CONTROL PANEL */
+        /* CONTROL PANEL ESPORT STYLE */
         .control-panel {
-            height: 150px; background: rgba(15, 23, 42, 0.98); border-top: 1px solid #1e293b;
+            height: 150px; background: rgba(5, 10, 20, 0.98); border-top: 2px solid #1e3a8a;
             display: flex; padding: 16px 24px; gap: 20px; align-items: center; justify-content: space-between; z-index: 5;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
         }
         .dialogue-box {
-            flex: 1; background: #07090e; border: 1px solid #334155; border-radius: 12px;
-            padding: 14px 18px; font-size: 14px; color: #e2e8f0; height: 100%; overflow-y: auto; line-height: 1.5;
+            flex: 1; background: #020617; border: 1px solid #1e3a8a; border-radius: 10px;
+            padding: 14px 18px; font-size: 14px; color: #cbd5e1; height: 100%; overflow-y: auto; line-height: 1.6;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8); font-weight: 600;
         }
         .action-buttons { display: flex; flex-direction: column; gap: 8px; min-width: 220px; }
         .btn-action {
-            padding: 10px 14px; background: #3b82f6; color: white; border: none; border-radius: 8px;
-            font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px;
-            transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            padding: 10px 14px; background: #1d4ed8; color: white; border: 1px solid #3b82f6; border-radius: 6px;
+            font-family: 'Orbitron', sans-serif; font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;
+            transition: all 0.2s; box-shadow: 0 0 10px rgba(29, 78, 216, 0.4);
         }
-        .btn-action:hover { filter: brightness(1.1); }
-        .btn-objection { background: #ef4444 !important; }
-        .btn-hammer { background: #f59e0b !important; color: #0f172a !important; }
+        .btn-action:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
+        .btn-objection { background: #b91c1c !important; border-color: #ef4444 !important; box-shadow: 0 0 15px rgba(185, 28, 28, 0.6) !important; }
+        .btn-objection:hover { box-shadow: 0 0 25px rgba(239, 68, 68, 0.9) !important; }
+        .btn-hammer { background: #b45309 !important; border-color: #f59e0b !important; color: #fff !important; box-shadow: 0 0 15px rgba(180, 83, 9, 0.6) !important; }
+        .btn-hammer:hover { box-shadow: 0 0 25px rgba(245, 158, 11, 0.9) !important; }
 
-        /* OBJECTION OVERLAY */
+        /* OBJECTION OVERLAY ANIMATION */
         #objection-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 999;
         }
         #objection-text {
-            font-size: 90px; font-weight: 900; color: #ef4444; text-transform: uppercase; font-style: italic;
-            text-shadow: 0 0 30px #000, 0 0 60px #ef4444; animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            font-family: 'Orbitron', sans-serif; font-size: 100px; font-weight: 900; color: #ef4444; text-transform: uppercase; font-style: italic;
+            text-shadow: 0 0 20px #000, 0 0 40px #ef4444, 0 0 80px #dc2626; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @keyframes popIn {
             0% { transform: scale(0.1); opacity: 0; }
@@ -114,10 +125,10 @@
         .shake { animation: shakeScreen 0.4s ease-in-out; }
         @keyframes shakeScreen {
             0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(-12px, 6px); }
-            40% { transform: translate(12px, -6px); }
-            60% { transform: translate(-6px, -6px); }
-            80% { transform: translate(6px, 6px); }
+            20% { transform: translate(-14px, 7px); }
+            40% { transform: translate(14px, -7px); }
+            60% { transform: translate(-7px, -7px); }
+            80% { transform: translate(7px, 7px); }
         }
     </style>
 </head>
@@ -126,26 +137,26 @@
     <!-- LOBBY SCREEN -->
     <div id="lobby-screen">
         <div class="lobby-card">
-            <h1>Phiên Tòa 5D Online</h1>
+            <h1>Phiên Tòa 5D Arena</h1>
             <div class="form-group">
-                <label>Tên Nhân Vật Của Bạn</label>
-                <input type="text" id="input-name" placeholder="Ví dụ: Luật Sư Tuấn" value="Luật Sư Tuấn">
+                <label>Tên Đấu Sĩ / Nhân Vật</label>
+                <input type="text" id="input-name" placeholder="Ví dụ: Esport Pro" value="Pro Player">
             </div>
             <div class="form-group">
-                <label>Mã Phòng Xét Xử (Toàn Cầu)</label>
-                <input type="text" id="input-room" value="ROOM-GLOBAL-1">
+                <label>Mã Phòng Chiến Đấu (Global)</label>
+                <input type="text" id="input-room" value="ROOM-ESPORT-1">
             </div>
             <div class="form-group">
-                <label>Chọn Vai Trò</label>
+                <label>Chọn Vị Trí Chiến Thuật</label>
                 <select id="select-role">
-                    <option value="judge">👨‍⚖️ Thẩm Phán (Chủ Tọa)</option>
+                    <option value="judge">👨‍⚖️ Thẩm Phán Chủ Tọa</option>
                     <option value="prosecutor">⚖️ Công Tố Viên</option>
                     <option value="defense" selected>🧑‍💼 Luật Sư Bào Chữa</option>
-                    <option value="defendant">🧍‍♂️ B bị Cáo</option>
+                    <option value="defendant">🧍‍♂️ Bị Cáo</option>
                     <option value="police">👮‍♂️ Cảnh Sát Áo Xanh</option>
                 </select>
             </div>
-            <button class="btn-primary" onclick="joinGame()">Vào Phòng Online</button>
+            <button class="btn-primary" onclick="joinGame()">Vào Trận Đấu</button>
         </div>
     </div>
 
@@ -153,11 +164,11 @@
     <div id="game-screen">
         <div class="top-hud">
             <div class="hud-info">
-                <span id="hud-room">Phòng: ...</span>
-                <span id="hud-user">Người chơi: ...</span>
-                <span id="hud-role">Vai trò: ...</span>
+                <span id="hud-room">ARENA: ...</span>
+                <span id="hud-user">PLAYER: ...</span>
+                <span id="hud-role">ROLE: ...</span>
             </div>
-            <button class="btn-exit" onclick="leaveGame()">Rời Phòng</button>
+            <button class="btn-exit" onclick="leaveGame()">Rời Trận</button>
         </div>
 
         <div class="courtroom-container" id="court-container">
@@ -172,10 +183,10 @@
                     <div class="seat-role">Thẩm Phán Chủ Tọa</div>
                     <div class="seat-name" id="name-judge">Trống</div>
                 </div>
-                <div class="seat-card" style="grid-column: 3 / 4; grid-row: 1 / 2; opacity: 0.7;">
+                <div class="seat-card" style="grid-column: 3 / 4; grid-row: 1 / 2; opacity: 0.6;">
                     <div class="avatar-box" style="font-size: 35px;">🏛️</div>
                     <div class="seat-role">Bồi Thẩm Đoàn</div>
-                    <div class="seat-name">Hội Đồng</div>
+                    <div class="seat-name">Hội Đồng Esport</div>
                 </div>
                 <div class="seat-card pos-prosecutor">
                     <div class="avatar-box">⚖️</div>
@@ -197,12 +208,12 @@
 
         <div class="control-panel">
             <div class="dialogue-box" id="dialogue-log">
-                [Hệ thống]: Đang kết nối vào máy chủ Supabase toàn cầu...
+                [Hệ thống Arena]: Đang kết nối hạ tầng Supabase toàn cầu...
             </div>
             <div class="action-buttons">
-                <button class="btn-action btn-objection" onclick="sendAction('objection')">Hô: PHẢN ĐỐI!</button>
-                <button class="btn-action btn-hammer" onclick="sendAction('hammer')">Gõ Búa Tuyên Án</button>
-                <button class="btn-action" onclick="sendAction('statement')">Phát Biểu / Tranh Tụng</button>
+                <button class="btn-action btn-objection" onclick="sendAction('objection')">🔥 Hô: PHẢN ĐỐI!</button>
+                <button class="btn-action btn-hammer" onclick="sendAction('hammer')">⚖️ Gõ Búa Tuyên Án</button>
+                <button class="btn-action" onclick="sendAction('statement')">💬 Tranh Tụng Nhanh</button>
             </div>
         </div>
     </div>
@@ -213,10 +224,10 @@
     </div>
 
     <script>
-        // --- THÔNG TIN SUPABASE ĐÃ ĐƯỢC TÍCH HỢP SẴN ---
+        // --- THÔNG TIN SUPABASE CỦA BẠN ---
         const SUPABASE_URL = 'https://luxaaxjliujydioiopbm.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_4CFDPbpNVcSpast0SzxrRw_Y-obbQm5';
-        // ----------------------------------------------
+        // ---------------------------------
 
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -227,22 +238,21 @@
 
         async function joinGame() {
             myName = document.getElementById('input-name').value.trim() || "Vô Danh";
-            myRoom = document.getElementById('input-room').value.trim() || "ROOM-GLOBAL-1";
+            myRoom = document.getElementById('input-room').value.trim() || "ROOM-ESPORT-1";
             myRole = document.getElementById('select-role').value;
 
-            document.getElementById('hud-room').innerText = `Phòng: ${myRoom}`;
-            document.getElementById('hud-user').innerText = `Người chơi: ${myName}`;
-            document.getElementById('hud-role').innerText = `Vai trò: ${document.getElementById('select-role').selectedOptions[0].text}`;
+            document.getElementById('hud-room').innerText = `ARENA: ${myRoom}`;
+            document.getElementById('hud-user').innerText = `PLAYER: ${myName}`;
+            document.getElementById('hud-role').innerText = `ROLE: ${document.getElementById('select-role').selectedOptions[0].text}`;
 
             document.getElementById('lobby-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
 
-            // Lấy hoặc tạo phòng trên Supabase
             let { data, error } = await client.from('rooms').select('*').eq('room_code', myRoom).single();
             
             let roomState = data ? data.state : { players: {}, logs: [] };
             roomState.players[myRole] = myName;
-            roomState.logs.push(`[Hệ thống]: ${myName} đã vào phòng với vai trò ${myRole}.`);
+            roomState.logs.push(`[Hệ thống]: Đấu sĩ ${myName} đã vào phòng với vị trí ${myRole}.`);
 
             if (!data) {
                 await client.from('rooms').insert([{ room_code: myRoom, state: roomState }]);
@@ -271,16 +281,16 @@
             let roomState = data.state;
 
             if (type === 'statement') {
-                let text = prompt("Nhập lời phát biểu/tranh tụng trước tòa:");
+                let text = prompt("Nhập lời tranh tụng:");
                 if (!text) return;
                 roomState.logs.push(`[${myRole.toUpperCase()} - ${myName}]: ${text}`);
             } else if (type === 'objection') {
-                roomState.logs.push(`🔥 ${myName} vừa hô lớn: PHẢN ĐỐI!`);
+                roomState.logs.push(`🔥 [OBJECTION]: ${myName} vừa hô lớn PHẢN ĐỐI!`);
                 roomState.triggerObjection = { user: myName, time: Date.now() };
             } else if (type === 'hammer') {
-                let res = prompt("Kết quả tuyên án:", "Bị cáo VÔ TỘI");
+                let res = prompt("Kết quả tuyên án:", "BỊ CÁO VÔ TỘI");
                 if (!res) return;
-                roomState.logs.push(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA! Kết quả: ${res}`);
+                roomState.logs.push(`⚖️ [HAMMER]: Thẩm phán tuyên án -> ${res}`);
             }
 
             await client.from('rooms').update({ state: roomState }).eq('room_code', myRoom);
@@ -288,7 +298,6 @@
 
         let lastObjectionTime = 0;
         function updateUI(state) {
-            // Cập nhật tên ghế ngồi
             if(state.players) {
                 document.getElementById('name-judge').innerText = state.players['judge'] || 'Trống';
                 document.getElementById('name-prosecutor').innerText = state.players['prosecutor'] || 'Trống';
@@ -297,21 +306,19 @@
                 document.getElementById('name-police').innerText = state.players['police'] || 'Trống';
             }
 
-            // Cập nhật lịch sử chat / tranh tụng
             if(state.logs) {
                 const logBox = document.getElementById('dialogue-log');
                 logBox.innerHTML = state.logs.join('<br>');
                 logBox.scrollTop = logBox.scrollHeight;
             }
 
-            // Hiệu ứng phản đối từ người chơi khác
             if(state.triggerObjection && state.triggerObjection.time > lastObjectionTime) {
                 lastObjectionTime = state.triggerObjection.time;
-                showObjectionAnim(state.triggerObjection.user);
+                showObjectionAnim();
             }
         }
 
-        function showObjectionAnim(name) {
+        function showObjectionAnim() {
             const overlay = document.getElementById('objection-overlay');
             const container = document.getElementById('court-container');
             overlay.style.display = 'flex';
