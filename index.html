@@ -3,360 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phiên Tòa 5D Online - Courtroom Simulator</title>
+    <title>Phiên Tòa 5D Online - Phòng Xử Án Tối Cao</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #07090e; color: #f3f4f6; min-height: 100vh; overflow: hidden; }
-
-        /* LOBBY SCREEN */
-        #lobby-screen {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
-            padding: 20px; position: absolute; top: 0; left: 0; width: 100%; z-index: 10;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            user-select: none;
         }
-        .lobby-card {
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 40px; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
         }
-        .lobby-card h1 { text-align: center; margin-bottom: 24px; color: #60a5fa; font-size: 28px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 12px 16px; background: #0b0f19; border: 1px solid #334155;
-            border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: all 0.3s;
+        /* 5D Courtroom Perspective Room */
+        .courtroom-5d {
+            background: radial-gradient(circle at 50% 25%, #2a150b 0%, #0d0603 65%, #020101 100%);
+            box-shadow: inset 0 0 120px rgba(0,0,0,0.95);
+            perspective: 1400px;
         }
-        .form-group input:focus, .form-group select:focus { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
-        .btn-primary {
-            width: 100%; padding: 14px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-        }
-        .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
-
-        /* GAME SCREEN (5D ENVIRONMENT) */
-        #game-screen { display: none; width: 100vw; height: 100vh; flex-direction: column; background: #07090e; }
-        
-        .top-hud {
-            height: 60px; background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid #1e293b;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 5;
-        }
-        .hud-info { display: flex; gap: 15px; font-size: 13px; color: #94a3b8; }
-        .hud-info span { background: #0b0f19; padding: 6px 14px; border-radius: 8px; border: 1px solid #334155; color: #e2e8f0; font-weight: 600; }
-        .btn-exit { background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
-        .btn-exit:hover { background: #b91c1c; }
-
-        /* 5D PERSPECTIVE ROOM */
-        .courtroom-container {
-            flex: 1; position: relative; perspective: 1400px; overflow: hidden;
-            background: radial-gradient(circle at 50% 40%, #172033 0%, #06080f 100%);
-            display: flex; align-items: center; justify-content: center;
-        }
-        
-        .stage-5d {
-            width: 92%; max-width: 1200px; height: 72vh;
-            background: linear-gradient(180deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
-            border: 2px solid rgba(59, 130, 246, 0.2); border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0,0,0,0.5);
-            position: relative; display: grid;
-            grid-template-columns: 1fr 1.2fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 20px; padding: 25px;
+        .desk-3d {
+            transform: rotateX(15deg);
             transform-style: preserve-3d;
-            transform: rotateX(8deg) translateZ(0);
+            background: linear-gradient(180deg, #653218 0%, #35170a 50%, #1b0a04 100%);
+            border-top: 5px solid #d97706;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.85), inset 0 2px 6px rgba(255,255,255,0.25);
         }
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-6px) scale(1.02); }
+        }
+        .anim-float { animation: floatAnim 3.2s ease-in-out infinite; }
 
-        /* CHARACTER SEATS (DESKS & AVATARS) */
-        .seat-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 15px; text-align: center; position: relative;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0) rotate(0); }
+            20% { transform: translate(-16px, -10px) rotate(-1.8deg); }
+            40% { transform: translate(16px, 10px) rotate(1.8deg); }
+            60% { transform: translate(-12px, 8px) rotate(-1deg); }
+            80% { transform: translate(10px, -6px) rotate(1deg); }
         }
-        .seat-card:hover { transform: translateY(-4px); border-color: rgba(59, 130, 246, 0.5); }
-        .seat-card.active-speaker { border-color: #3b82f6; box-shadow: 0 0 25px rgba(59, 130, 246, 0.6); }
+        .shake-active { animation: screenShake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
 
-        .avatar-box {
-            font-size: 50px; margin-bottom: 6px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-            animation: floatAvatar 3s ease-in-out infinite alternate;
+        @keyframes slamAnim {
+            0% { transform: scale(4) rotate(-15deg); opacity: 0; }
+            70% { transform: scale(0.95) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
         }
-        @keyframes floatAvatar {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-5px); }
-        }
-        .seat-role { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        .seat-name { font-size: 16px; font-weight: bold; color: #f8fafc; margin-top: 3px; }
+        .anim-slam { animation: slamAnim 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
-        /* GRID PLACEMENT */
-        .pos-judge { grid-column: 2 / 3; grid-row: 1 / 2; background: linear-gradient(135deg, rgba(49, 46, 129, 0.6) 0%, rgba(30, 41, 59, 0.9) 100%); border-color: rgba(99, 102, 241, 0.4); }
-        .pos-police { grid-column: 1 / 2; grid-row: 1 / 2; background: linear-gradient(135deg, rgba(15, 118, 110, 0.4) 0%, rgba(15, 23, 42, 0.9) 100%); border-color: rgba(45, 212, 191, 0.3); }
-        .pos-prosecutor { grid-column: 1 / 2; grid-row: 2 / 3; }
-        .pos-defense { grid-column: 3 / 4; grid-row: 2 / 3; }
-        .pos-defendant { grid-column: 2 / 3; grid-row: 2 / 3; border-color: rgba(245, 158, 11, 0.3); }
-
-        /* CONTROL PANEL */
-        .control-panel {
-            height: 150px; background: rgba(15, 23, 42, 0.98); border-top: 1px solid #1e293b;
-            display: flex; padding: 16px 24px; gap: 20px; align-items: center; justify-content: space-between; z-index: 5;
+        .btn-objection {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            border: 2px solid #f87171;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.8);
         }
-        .dialogue-box {
-            flex: 1; background: #07090e; border: 1px solid #334155; border-radius: 12px;
-            padding: 14px 18px; font-size: 14px; color: #e2e8f0; height: 100%; overflow-y: auto; line-height: 1.5;
+        .btn-hammer {
+            background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+            border: 2px solid #fef08a;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
         }
-        .action-buttons { display: flex; flex-direction: column; gap: 8px; min-width: 220px; }
-        .btn-action {
-            padding: 10px 14px; background: #3b82f6; color: white; border: none; border-radius: 8px;
-            font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px;
-            transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-        .btn-action:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        .btn-objection { background: #ef4444 !important; box-shadow: 0 3px 12px rgba(239, 68, 68, 0.4); }
-        .btn-hammer { background: #f59e0b !important; color: #0f172a !important; box-shadow: 0 3px 12px rgba(245, 158, 11, 0.4); }
-
-        /* OBJECTION OVERLAY ANIMATION */
-        #objection-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center;
-            z-index: 999; animation: flashBg 0.4s infinite alternate;
-        }
-        #objection-text {
-            font-size: 90px; font-weight: 900; color: #ef4444; text-transform: uppercase;
-            font-style: italic; text-shadow: 0 0 30px #000, 0 0 60px #ef4444, 0 0 90px #dc2626;
-            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes popIn {
-            0% { transform: scale(0.1) rotate(-10deg); opacity: 0; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-        @keyframes flashBg {
-            0% { background: rgba(239, 68, 68, 0.25); }
-            100% { background: rgba(0, 0, 0, 0.92); }
-        }
-        .shake { animation: shakeScreen 0.4s ease-in-out; }
-        @keyframes shakeScreen {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(-12px, 6px); }
-            40% { transform: translate(12px, -6px); }
-            60% { transform: translate(-6px, -6px); }
-            80% { transform: translate(6px, 6px); }
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.9); }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
     <!-- LOBBY SCREEN -->
-    <div id="lobby-screen">
-        <div class="lobby-card">
-            <h1>Phiên Tòa 5D Online</h1>
-            <div class="form-group">
-                <label>Tên Nhân Vật Của Bạn</label>
-                <input type="text" id="input-name" placeholder="Ví dụ: Luật Sư Tuấn" value="Luật Sư Tuấn">
+    <div id="screen-lobby" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-stone-950 to-amber-950">
+        <div class="max-w-md w-full bg-slate-900/95 border-2 border-amber-500/70 rounded-3xl p-6 sm:p-8 shadow-[0_0_60px_rgba(245,158,11,0.3)] backdrop-blur-md">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-amber-300 text-3xl mb-3 shadow-lg">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <h1 class="font-cinzel text-2xl sm:text-3xl font-black text-amber-300 tracking-wider">
+                    PHIÊN TÒA 5D ONLINE
+                </h1>
+                <p class="text-xs text-slate-400 mt-1">Mô phỏng phòng xử án tối cao 3D/5D trực tuyến</p>
             </div>
-            <div class="form-group">
-                <label>Mã Phòng Xét Xử</label>
-                <input type="text" id="input-room" value="ROOM-VIP">
-            </div>
-            <div class="form-group">
-                <label>Chọn Vai Trò Trong Phiên Tòa</label>
-                <select id="select-role">
-                    <option value="judge">👨‍⚖️ Thẩm Phán (Chủ Tọa)</option>
-                    <option value="prosecutor">⚖️ Công Tố Viên (Buộc Tội)</option>
-                    <option value="defense" selected>🧑‍💼 Luật Sư Bào Chữa</option>
-                    <option value="defendant">🧍‍♂️ Bị Cáo</option>
-                    <option value="police">👮‍♂️ Cảnh Sát Áo Xanh (Áp Giải)</option>
-                </select>
-            </div>
-            <button class="btn-primary" onclick="joinGame()">Vào Phòng Chơi Luôn</button>
+
+            <form onsubmit="handleJoinRoom(event)" class="space-y-4 text-xs sm:text-sm">
+                <div>
+                    <label class="block text-amber-300 font-bold mb-1.5"><i class="fa-solid fa-door-open mr-1.5"></i> Mã Phòng (Room ID)</label>
+                    <div class="flex gap-2">
+                        <input id="input-room" required type="text" value="TOA-AN-VIP" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono focus:border-amber-400 focus:outline-none">
+                        <button type="button" onclick="randomRoom()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-600 font-bold cursor-pointer"><i class="fa-solid fa-dice"></i></button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-amber-300 font-bold mb-1.5"><i class="fa-solid fa-user mr-1.5"></i> Tên Của Bạn</label>
+                    <input id="input-name" required type="text" placeholder="VD: Luật Sư Tài Ba" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-amber-400 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-amber-300 font-bold mb-1.5"><i class="fa-solid fa-user-shield mr-1.5"></i> Chọn Vai Trò</label>
+                    <select id="select-role" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-amber-400 focus:outline-none">
+                        <option value="judge">👨‍⚖️ Thẩm Phán (Chủ Tọa Phiên Tòa)</option>
+                        <option value="prosecutor">⚖️ Công Tố Viên (Bên Buộc Tội)</option>
+                        <option value="defense" selected>🧑‍💼 Luật Sư Bào Chữa</option>
+                        <option value="defendant">🧍‍♂️ Bị Cáo (Đứng Vành Móng Ngựa)</option>
+                        <option value="police">👮‍♂️ Cảnh Sát Áo Xanh (Áp Giải Trật Tự)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-hammer w-full py-3.5 rounded-xl text-slate-950 font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer mt-2 text-sm sm:text-base">
+                    <i class="fa-solid fa-gavel"></i> VÀO PHÒNG XỬ ÁN NGAY
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- GAME SCREEN -->
-    <div id="game-screen">
-        <div class="top-hud">
-            <div class="hud-info">
-                <span id="hud-room">Phòng: ROOM-VIP</span>
-                <span id="hud-user">Người chơi: Luật Sư Tuấn</span>
-                <span id="hud-role">Vai trò: Luật Sư Bào Chữa</span>
+    <!-- MAIN GAME SCREEN -->
+    <header class="bg-slate-950 border-b border-amber-900/50 px-4 py-2.5 flex items-center justify-between z-30 shadow-md">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-300 shadow">
+                <i class="fa-solid fa-scale-balanced text-sm"></i>
             </div>
-            <button class="btn-exit" onclick="leaveGame()">Rời Phòng</button>
-        </div>
-
-        <div class="courtroom-container" id="court-container">
-            <div class="stage-5d">
-                <!-- Cảnh sát áo xanh canh gác -->
-                <div class="seat-card pos-police">
-                    <div class="avatar-box">👮‍♂️</div>
-                    <div class="seat-role">Cảnh Sát Áo Xanh</div>
-                    <div class="seat-name" id="name-police">Đồng chí Hùng</div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-cinzel text-sm sm:text-base font-bold text-amber-300">PHIÊN TÒA 5D TỐI CAO</h1>
+                    <span id="badge-role" class="text-[11px] font-bold px-2.5 py-0.5 rounded bg-amber-500 text-slate-950">Luật sư</span>
+                    <span id="badge-room" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Phòng: TOA-AN-VIP</span>
                 </div>
-
-                <!-- Thẩm phán chủ tọa -->
-                <div class="seat-card pos-judge">
-                    <div class="avatar-box">👨‍⚖️</div>
-                    <div class="seat-role">Thẩm Phán Chủ Tọa</div>
-                    <div class="seat-name" id="name-judge">Quan Tòa Minh</div>
-                </div>
-
-                <!-- Ghế trống góc phải trên (Bồi thẩm đoàn / Dự khán) -->
-                <div class="seat-card" style="grid-column: 3 / 4; grid-row: 1 / 2; opacity: 0.7;">
-                    <div class="avatar-box" style="font-size: 35px;">🏛️</div>
-                    <div class="seat-role">Bồi Thẩm Đoàn</div>
-                    <div class="seat-name">Hội Đồng Xét Xử</div>
-                </div>
-
-                <!-- Công tố viên -->
-                <div class="seat-card pos-prosecutor">
-                    <div class="avatar-box">⚖️</div>
-                    <div class="seat-role">Công Tố Viên</div>
-                    <div class="seat-name" id="name-prosecutor">Kiểm Sát Viên Nam</div>
-                </div>
-
-                <!-- Bị cáo đứng vành móng ngựa -->
-                <div class="seat-card pos-defendant">
-                    <div class="avatar-box">🧍‍♂️</div>
-                    <div class="seat-role">Bị Cáo Vành Móng Ngựa</div>
-                    <div class="seat-name" id="name-defendant">Nguyễn Văn A</div>
-                </div>
-
-                <!-- Luật sư bào chữa -->
-                <div class="seat-card pos-defense active-speaker">
-                    <div class="avatar-box">🧑‍💼</div>
-                    <div class="seat-role">Luật Sư Bào Chữa</div>
-                    <div class="seat-name" id="name-defense">Luật Sư Tuấn</div>
-                </div>
+                <p class="text-xs text-amber-100/70">Vụ án: Tranh tụng trực tuyến thời gian thực đa người chơi</p>
             </div>
         </div>
+        <button onclick="leaveRoom()" class="px-3 py-1.5 rounded-lg bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-200 font-bold text-xs flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-right-from-bracket"></i> Đổi Phòng
+        </button>
+    </header>
 
-        <!-- CONTROL PANEL -->
-        <div class="control-panel">
-            <div class="dialogue-box" id="dialogue-log">
-                [Hệ thống]: Phiên tòa 5D chính thức khai mạc. Thẩm phán đã gõ búa yêu cầu các bên giữ trật tự và bước vào phần tranh tụng!
+    <!-- 5D COURTROOM STAGE -->
+    <main id="stage-wrapper" class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+        
+        <!-- Center Stage 5D (8 cols) -->
+        <div class="lg:col-span-8 flex flex-col gap-3">
+            
+            <div class="courtroom-5d rounded-3xl border-2 border-amber-700/60 shadow-2xl overflow-hidden relative p-4">
+                <div class="flex justify-center pb-3">
+                    <div class="px-6 py-1 rounded-full bg-amber-950/80 border border-amber-500/50 flex items-center gap-2 shadow-xl">
+                        <i class="fa-solid fa-scale-balanced text-amber-400"></i>
+                        <span class="font-cinzel text-xs font-bold tracking-widest text-amber-200 uppercase">PHÒNG XỬ ÁN 5D TỐI CAO</span>
+                        <i class="fa-solid fa-scale-balanced text-amber-400"></i>
+                    </div>
+                </div>
+
+                <!-- JUDGE BENCH (TOP) -->
+                <div class="flex flex-col items-center pb-4">
+                    <div id="bubble-judge" class="hidden mb-1 px-3 py-1 rounded-xl bg-amber-100 text-slate-950 text-xs font-bold shadow-lg border-2 border-amber-500 animate-bounce">
+                        "Trật tự phiên tòa!"
+                    </div>
+                    <div class="anim-float flex flex-col items-center">
+                        <svg class="w-24 h-24 sm:w-28 sm:h-28 drop-shadow-2xl" viewBox="0 0 120 120">
+                            <rect x="28" y="10" width="64" height="85" rx="12" fill="#281408" stroke="#d97706" stroke-width="2.5"/>
+                            <path d="M22 115 C22 78, 98 78, 98 115 Z" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+                            <path d="M44 82 L60 112 L76 82 Z" fill="#b91c1c"/><path d="M53 82 L60 102 L67 82 Z" fill="#f8fafc"/>
+                            <circle cx="60" cy="52" r="21" fill="#fde68a"/><path d="M38 48 C38 26, 82 26, 82 48 C82 36, 38 36, 38 48 Z" fill="#cbd5e1"/>
+                            <rect x="46" y="47" width="11" height="8" rx="2" fill="none" stroke="#0f172a" stroke-width="1.8"/>
+                            <rect x="63" y="47" width="11" height="8" rx="2" fill="none" stroke="#0f172a" stroke-width="1.8"/>
+                            <line x1="57" y1="51" x2="63" y2="51" stroke="#0f172a" stroke-width="1.8"/>
+                            <circle cx="51.5" cy="51" r="1.8" fill="#0f172a"/><circle cx="68.5" cy="51" r="1.8" fill="#0f172a"/>
+                            <path d="M53 63 Q60 66 67 63" fill="none" stroke="#78350f" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="desk-3d w-56 sm:w-64 py-1.5 px-3 rounded-t-xl text-center -mt-3 relative z-10">
+                        <div class="text-[10px] font-extrabold text-amber-300 uppercase">Thẩm Phán Chủ Tọa</div>
+                        <div id="name-judge" class="text-xs sm:text-sm font-bold text-white truncate">Thẩm phán Minh Đức</div>
+                    </div>
+                </div>
+
+                <!-- LOWER STAGE ROW: PROSECUTOR | DEFENDANT + GREEN POLICE | DEFENSE -->
+                <div class="grid grid-cols-12 gap-2 sm:gap-4 items-end">
+                    
+                    <!-- PROSECUTOR (LEFT) -->
+                    <div class="col-span-4 flex flex-col items-center">
+                        <div id="bubble-prosecutor" class="hidden mb-1 px-2.5 py-1 rounded-xl bg-rose-100 text-rose-950 text-[11px] font-bold shadow border-2 border-rose-500">
+                            "Buộc tội!"
+                        </div>
+                        <div class="anim-float flex flex-col items-center">
+                            <svg class="w-20 h-24 sm:w-24 sm:h-28 drop-shadow-xl" viewBox="0 0 110 120">
+                                <path d="M18 118 C18 76, 92 76, 92 118 Z" fill="#1e3a8a" stroke="#172554" stroke-width="2"/>
+                                <path d="M43 78 L55 110 L67 78 Z" fill="#ffffff"/><path d="M52 80 L55 106 L58 80 Z" fill="#dc2626"/>
+                                <circle cx="55" cy="50" r="19" fill="#fed7aa"/>
+                                <path d="M35 46 L40 26 L50 32 L58 22 L66 32 L75 28 L75 46 C68 38, 42 38, 35 46 Z" fill="#1e293b"/>
+                                <circle cx="47" cy="50" r="2" fill="#0f172a"/><circle cx="63" cy="50" r="2" fill="#0f172a"/>
+                                <path d="M48 61 Q55 58 62 61" fill="none" stroke="#9a3412" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="desk-3d w-full py-1.5 px-2 rounded-t-lg text-center -mt-3 relative z-10">
+                            <div class="text-[9px] font-extrabold text-rose-400 uppercase">Công Tố Viên</div>
+                            <div id="name-prosecutor" class="text-[11px] sm:text-xs font-bold text-white truncate">KSV Hoàng Quân</div>
+                        </div>
+                    </div>
+
+                    <!-- DEFENDANT + GREEN POLICE (CENTER) -->
+                    <div class="col-span-4 flex flex-col items-center">
+                        <div id="bubble-defendant" class="hidden mb-1 px-2.5 py-1 rounded-xl bg-white text-slate-900 text-[11px] font-bold shadow border-2 border-slate-400">
+                            "Tôi oan ức!"
+                        </div>
+                        <div class="flex items-end justify-center gap-1">
+                            <!-- Defendant -->
+                            <div class="anim-float flex flex-col items-center">
+                                <svg class="w-16 h-22 sm:w-20 sm:h-26 drop-shadow-xl" viewBox="0 0 100 120">
+                                    <path d="M16 118 C16 76, 84 76, 84 118 Z" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+                                    <path d="M22 92 H78 M19 102 H81 M17 112 H83" stroke="#334155" stroke-width="4"/>
+                                    <circle cx="50" cy="50" r="19" fill="#fde68a"/>
+                                    <path d="M31 48 C31 28, 69 28, 69 48 C63 36, 37 36, 31 48 Z" fill="#3f2e21"/>
+                                    <circle cx="43" cy="49" r="2" fill="#0f172a"/><circle cx="57" cy="49" r="2" fill="#0f172a"/>
+                                    <path d="M44 61 Q50 61 56 61" fill="none" stroke="#78350f" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <!-- Green Police Officer -->
+                            <div class="anim-float flex flex-col items-center -ml-2">
+                                <svg class="w-16 h-22 sm:w-20 sm:h-26 drop-shadow-xl" viewBox="0 0 105 120">
+                                    <path d="M18 118 C18 76, 87 76, 87 118 Z" fill="#15803d" stroke="#14532d" stroke-width="2"/>
+                                    <path d="M42 78 L52.5 104 L63 78 Z" fill="#86efac"/>
+                                    <circle cx="52.5" cy="52" r="18" fill="#fed7aa"/>
+                                    <path d="M31 41 L74 41 L69 27 L36 27 Z" fill="#166534" stroke="#14532d" stroke-width="1.5"/>
+                                    <polygon points="52.5,31 53.5,33.5 56,33.5 54,35 54.8,37.5 52.5,36 50.2,37.5 51,35 49,33.5 51.5,33.5" fill="#facc15"/>
+                                    <circle cx="46" cy="52" r="2" fill="#0f172a"/><circle cx="59" cy="52" r="2" fill="#0f172a"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="desk-3d w-full py-1.5 px-2 rounded-t-lg text-center -mt-3 relative z-10 border-t-4 border-amber-600">
+                            <div class="text-[9px] font-extrabold text-emerald-400 uppercase">Vành Móng Ngựa</div>
+                            <div id="name-defendant" class="text-[11px] sm:text-xs font-bold text-white truncate">Bị cáo Trần Văn Tèo</div>
+                        </div>
+                    </div>
+
+                    <!-- DEFENSE ATTORNEY (RIGHT) -->
+                    <div class="col-span-4 flex flex-col items-center">
+                        <div id="bubble-defense" class="hidden mb-1 px-2.5 py-1 rounded-xl bg-sky-100 text-sky-950 text-[11px] font-bold shadow border-2 border-sky-500">
+                            "Phản đối!"
+                        </div>
+                        <div class="anim-float flex flex-col items-center">
+                            <svg class="w-20 h-24 sm:w-24 sm:h-28 drop-shadow-xl" viewBox="0 0 110 120">
+                                <path d="M18 118 C18 76, 92 76, 92 118 Z" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+                                <path d="M43 78 L55 110 L67 78 Z" fill="#f8fafc"/><path d="M52 80 L55 106 L58 80 Z" fill="#0284c7"/>
+                                <circle cx="55" cy="50" r="19" fill="#fde68a"/>
+                                <path d="M35 48 C35 25, 75 25, 75 48 C70 34, 42 36, 35 48 Z" fill="#0f172a"/>
+                                <circle cx="47" cy="50" r="2" fill="#0f172a"/><circle cx="63" cy="50" r="2" fill="#0f172a"/>
+                                <path d="M48 60 Q55 64 62 60" fill="none" stroke="#78350f" stroke-width="2.2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="desk-3d w-full py-1.5 px-2 rounded-t-lg text-center -mt-3 relative z-10">
+                            <div class="text-[9px] font-extrabold text-sky-400 uppercase">Luật Sư Bào Chữa</div>
+                            <div id="name-defense" class="text-[11px] sm:text-xs font-bold text-white truncate">LS. Nguyễn Hữu Đạt</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="action-buttons">
-                <button class="btn-action btn-objection" onclick="triggerObjection()">Hô: PHẢN ĐỐI!</button>
-                <button class="btn-action btn-hammer" onclick="triggerHammer()">Gõ Búa Tuyên Án</button>
-                <button class="btn-action" onclick="sendStatement()">Phát Biểu / Tranh Tụng</button>
+
+            <!-- ACTION & DIALOGUE PANEL -->
+            <div class="bg-slate-900 border-2 border-amber-500/60 rounded-3xl p-4 shadow-2xl flex flex-col justify-between">
+                <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-xs">
+                    <span id="speaker-tag" class="px-3 py-1 rounded bg-amber-500 text-slate-950 font-black uppercase">Chủ Tọa</span>
+                    <span id="room-status-text" class="text-emerald-400 font-mono">● Đã kết nối phòng</span>
+                </div>
+                <div id="dialogue-text" class="text-slate-100 text-sm sm:text-base font-medium min-h-[50px] mb-3 leading-relaxed">
+                    Chào mừng quý vị đến với Phiên Tòa 5D Tối Cao. Vụ án chính thức bắt đầu tranh tụng!
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <button onclick="sendStatement()" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-comments text-amber-400"></i> Phát Biểu Lời Khai
+                    </button>
+                    <button onclick="triggerObjection()" class="btn-objection px-3 py-2.5 rounded-xl text-white font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-hand-fist"></i> HÔ: PHẢN ĐỐI!
+                    </button>
+                    <button onclick="triggerHammer()" class="btn-hammer px-3 py-2.5 rounded-xl text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-gavel"></i> GÕ BÚA TUYÊN ÁN
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar: Transcript & Players (4 cols) -->
+        <div class="lg:col-span-4 flex flex-col gap-3">
+            <div class="bg-slate-900 border border-slate-700/80 rounded-3xl p-3.5 shadow-lg flex-1 flex flex-col min-h-[340px]">
+                <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
+                    <h2 class="text-xs font-extrabold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-scroll"></i> Biên Bản Tranh Tụng Tòa Án
+                    </h2>
+                </div>
+                <div id="transcript-box" class="flex-1 space-y-2 max-h-[380px] overflow-y-auto pr-1 text-xs">
+                    <div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-slate-300">
+                        [Hệ thống]: Khởi tạo phòng xử án thành công. Sẵn sàng tương tác real-time.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- OBJECTION OVERLAY ANIMATION -->
+    <div id="objection-overlay" class="fixed inset-0 z-50 pointer-events-none hidden items-center justify-center bg-red-950/50 backdrop-blur-[2px]">
+        <div id="objection-banner" class="bg-gradient-to-r from-red-700 via-red-600 to-red-700 border-y-4 border-amber-300 px-8 py-5 shadow-[0_0_80px_rgba(239,68,68,1)] transform -rotate-3">
+            <div class="font-black text-5xl sm:text-7xl text-white tracking-widest uppercase italic font-cinzel">
+                PHẢN ĐỐI!
             </div>
         </div>
     </div>
 
-    <!-- OBJECTION OVERLAY -->
-    <div id="objection-overlay" onclick="hideObjection()">
-        <div id="objection-text">PHẢN ĐỐI!</div>
-    </div>
-
+    <!-- JAVASCRIPT GAME LOGIC & REAL-TIME BROADCAST -->
     <script>
         let myName = "";
-        let myRoom = "";
-        let myRole = "";
+        let myRoom = "TOA-AN-VIP";
+        let myRole = "defense";
 
-        // Đồng bộ thời gian thực giữa các tab/trình duyệt
-        const bc = new BroadcastChannel('phientoa_5d_room_v2');
+        const bc = new BroadcastChannel('phien_toa_5d_channel_v3');
 
         bc.onmessage = (event) => {
             const data = event.data;
             if (data.room === myRoom) {
                 if (data.type === 'statement') {
-                    appendLog(`[${data.senderRole.toUpperCase()} - ${data.senderName}]: ${data.text}`);
+                    appendTranscript(`[${data.roleName} - ${data.sender}]: ${data.text}`);
+                    updateDialogue(data.role, data.sender, data.text);
                 } else if (data.type === 'objection') {
-                    showObjectionAnim(data.senderName);
+                    playObjectionEffect(data.sender);
                 } else if (data.type === 'hammer') {
-                    appendLog(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA TUYÊN ÁN! Kết quả: ${data.result}`);
+                    appendTranscript(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA TUYÊN ÁN! Kết quả: ${data.result}`);
+                    updateDialogue('judge', 'Thẩm Phán Tối Cao', `TÒA TUYÊN ÁN: ${data.result}`);
                 }
             }
         };
 
-        function joinGame() {
-            myName = document.getElementById('input-name').value.trim() || "Vô Danh";
-            myRoom = document.getElementById('input-room').value.trim() || "ROOM-VIP";
-            myRole = document.getElementById('select-role').value;
-
-            document.getElementById('hud-room').innerText = `Phòng: ${myRoom}`;
-            document.getElementById('hud-user').innerText = `Người chơi: ${myName}`;
-            document.getElementById('hud-role').innerText = `Vai trò: ${document.getElementById('select-role').selectedOptions[0].text}`;
-
-            // Gán tên nhân vật tương ứng lên ghế
-            if(myRole === 'judge') document.getElementById('name-judge').innerText = myName;
-            if(myRole === 'prosecutor') document.getElementById('name-prosecutor').innerText = myName;
-            if(myRole === 'defense') document.getElementById('name-defense').innerText = myName;
-            if(myRole === 'defendant') document.getElementById('name-defendant').innerText = myName;
-            if(myRole === 'police') document.getElementById('name-police').innerText = myName;
-
-            document.getElementById('lobby-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'flex';
-
-            appendLog(`[Hệ thống]: Bạn đã vào phòng ${myRoom} thành công với vai trò ${document.getElementById('select-role').selectedOptions[0].text}.`);
+        function randomRoom() {
+            document.getElementById('input-room').value = 'ROOM-' + Math.floor(1000 + Math.random() * 9000);
         }
 
-        function leaveGame() {
-            document.getElementById('game-screen').style.display = 'none';
-            document.getElementById('lobby-screen').style.display = 'flex';
+        function handleJoinRoom(e) {
+            e.preventDefault();
+            myName = document.getElementById('input-name').value.trim() || "Người Chơi";
+            myRoom = document.getElementById('input-room').value.trim().toUpperCase() || "TOA-AN-VIP";
+            myRole = document.getElementById('select-role').value;
+
+            const roleLabelMap = { judge: 'Thẩm Phán', prosecutor: 'Công Tố Viên', defense: 'Luật Sư', defendant: 'Bị Cáo', police: 'Cảnh Sát' };
+            const roleName = roleLabelMap[myRole];
+
+            document.getElementById('badge-room').textContent = `Phòng: ${myRoom}`;
+            document.getElementById('badge-role').textContent = roleName;
+
+            if (myRole === 'judge') document.getElementById('name-judge').textContent = myName;
+            if (myRole === 'prosecutor') document.getElementById('name-prosecutor').textContent = myName;
+            if (myRole === 'defense') document.getElementById('name-defense').textContent = myName;
+            if (myRole === 'defendant') document.getElementById('name-defendant').textContent = myName;
+
+            document.getElementById('screen-lobby').classList.add('hidden');
+            appendTranscript(`[Hệ thống]: ${myName} đã tham gia phòng ${myRoom} với vai trò ${roleName}.`);
+        }
+
+        function leaveRoom() {
+            document.getElementById('screen-lobby').classList.remove('hidden');
         }
 
         function sendStatement() {
-            let text = prompt("Nhập lời phát biểu/tranh tụng của bạn trước tòa:");
+            const text = prompt("Nhập lời phát biểu hoặc lập luận tranh tụng của bạn trước tòa:");
             if (!text) return;
+            const roleLabelMap = { judge: 'Thẩm Phán', prosecutor: 'Công Tố Viên', defense: 'Luật Sư', defendant: 'Bị Cáo', police: 'Cảnh Sát' };
+            const roleName = roleLabelMap[myRole];
 
-            appendLog(`[BẠN - ${myName}]: ${text}`);
+            appendTranscript(`[${roleName} - ${myName}]: ${text}`);
+            updateDialogue(myRole, myName, text);
+
             bc.postMessage({
                 room: myRoom,
                 type: 'statement',
-                senderName: myName,
-                senderRole: myRole,
+                sender: myName,
+                role: myRole,
+                roleName: roleName,
                 text: text
             });
         }
 
         function triggerObjection() {
-            showObjectionAnim(myName);
+            playObjectionEffect(myName);
             bc.postMessage({
                 room: myRoom,
                 type: 'objection',
-                senderName: myName
+                sender: myName
             });
         }
 
-        function showObjectionAnim(name) {
+        function playObjectionEffect(senderName) {
             const overlay = document.getElementById('objection-overlay');
-            const container = document.getElementById('court-container');
-            overlay.style.display = 'flex';
-            container.classList.add('shake');
+            const banner = document.getElementById('objection-banner');
+            const wrapper = document.getElementById('stage-wrapper');
 
-            // Hiệu ứng âm thanh kịch tính Web Audio API
+            wrapper.classList.remove('shake-active');
+            void wrapper.offsetWidth;
+            wrapper.classList.add('shake-active');
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            banner.classList.remove('anim-slam');
+            void banner.offsetWidth;
+            banner.classList.add('anim-slam');
+
+            // Web Audio API Sound
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(250, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(700, ctx.currentTime + 0.35);
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.35);
+                [200, 350, 500, 700].forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.15);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + idx * 0.08);
+                    osc.stop(ctx.currentTime + idx * 0.08 + 0.16);
+                });
             } catch(e) {}
 
             setTimeout(() => {
-                overlay.style.display = 'none';
-                container.classList.remove('shake');
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
             }, 800);
 
-            appendLog(`🔥 ${name} vừa hô lớn: PHẢN ĐỐI!`);
-        }
-
-        function hideObjection() {
-            document.getElementById('objection-overlay').style.display = 'none';
+            appendTranscript(`🔥 ${senderName} vừa hô lớn: PHẢN ĐỐI!`);
+            showBubble(myRole, '"PHẢN ĐỐI!"');
         }
 
         function triggerHammer() {
-            let result = prompt("Nhập kết quả tuyên án (Ví dụ: Bị cáo VÔ TỘI / Bị cáo 5 năm tù giam):", "Bị cáo VÔ TỘI");
+            const result = prompt("Nhập kết quả tuyên án của Thẩm Phán (VD: Bị cáo VÔ TỘI / Bị cáo 3 năm tù giam):", "Bị cáo VÔ TỘI");
             if (!result) return;
 
-            appendLog(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA TUYÊN ÁN! Kết quả: ${result}`);
+            appendTranscript(`⚖️ THẨM PHÁN ĐÃ GÕ BÚA TUYÊN ÁN! Kết quả: ${result}`);
+            updateDialogue('judge', 'Thẩm Phán Tối Cao', `TÒA TUYÊN ÁN: ${result}`);
+
             bc.postMessage({
                 room: myRoom,
                 type: 'hammer',
@@ -364,11 +442,26 @@
             });
         }
 
-        function appendLog(msg) {
-            const logBox = document.getElementById('dialogue-log');
-            logBox.innerHTML += `<br>` + msg;
-            logBox.scrollTop = logBox.scrollHeight;
+        function updateDialogue(role, name, text) {
+            const roleLabels = { judge: 'Thẩm Phán', prosecutor: 'Công Tố Viên', defense: 'Luật Sư', defendant: 'Bị Cáo', police: 'Cảnh Sát' };
+            document.getElementById('speaker-tag').textContent = `${roleLabels[role] || 'Hệ Thống'}: ${name}`;
+            document.getElementById('dialogue-text').textContent = `"${text}"`;
+            showBubble(role, text);
+        }
+
+        function showBubble(role, text) {
+            const bubble = document.getElementById(`bubble-${role}`);
+            if (!bubble) return;
+            bubble.textContent = text;
+            bubble.classList.remove('hidden');
+            setTimeout(() => bubble.classList.add('hidden'), 3500);
+        }
+
+        function appendTranscript(msg) {
+            const box = document.getElementById('transcript-box');
+            box.innerHTML += `<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-slate-300">${msg}</div>`;
+            box.scrollTop = box.scrollHeight;
         }
     </script>
 </body>
-</html>
+</html>vv
